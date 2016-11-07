@@ -1,0 +1,76 @@
+{
+  "version": "tutorial_1", 
+  "available_traits":
+  [
+    {
+      "TID": 06,
+      "Name": "Horizontal Movement",
+      "InternalName": "hormov",
+      "Tier": "BasicTier",
+      "Type": "Actuator",
+    },
+    {
+      "TID": 07,
+      "Name": "Vertical Movement",
+      "InternalName": "vermov",
+      "Tier": "BasicTier",
+      "Type": "Actuator",
+    },
+    {
+      "TID": 08,
+      "Name": "Extra Speed",
+      "InternalName": "speed",
+      "Tier": "BasicTier",
+      "Type": "SimpleTrait"
+    },
+    {
+      "TID": 01,
+      "Name": "Cold Weather Resistance Trait",
+      "InternalName": "coldresist",
+      "Tier": "TierI",
+      "Type": "SimpleTrait",
+    },
+    {
+      "TID": 02,
+      "Name": "Hot Weather Resistance Trait",
+      "InternalName": "hotresist",
+      "Tier": "TierI" 
+      "Type": "SimpleTrait"
+    },
+    {
+      "TID": 03,
+      "Name": "Temperature Sensor",
+      "InternalName": "tempsensor",
+      "Tier": "TierI", 
+      "Type": "Sensor"
+    },
+    {
+      "TID": 04,
+      "Name": "G-Substance Sensor",
+      "InternalName": "gsensor",
+      "Tier": "TierI", 
+      "Type": "Sensor"
+    },
+    {
+      "TID": 05,
+      "Name": "G-Substance Consumer",
+      "InternalName": "gtou",
+      "Tier": "TierI", 
+      "Type": "Actuator"
+    },
+    {
+      "TID": 16,
+      "Name": "Temperature Regulator (to Hot)",
+      "InternalName": "hottempreg",
+      "Tier": "TierII", 
+      "Type": "Actuator"
+    },
+    {
+      "TID": 17,
+      "Name": "Temperature Regulator (to Cold)",
+      "InternalName": "coldtempreg",
+      "Tier": "TierII", 
+      "Type": "Actuator"
+    }
+  ]
+}
