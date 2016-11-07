@@ -1,0 +1,55 @@
+{
+  "version": "tutorial_1",
+  "traits_version": "tutorial_1",
+  "available_splices":
+  [
+    {
+      "Name": "Polar",
+      "InternalName": "polar",
+      "Traits": [01, 03], 
+      "Description": "Better adapted to cold weather",
+      "Instinct": "Nomadic",
+      "Size": "Small"
+    },
+    {
+      "Name": "Tropical",
+      "Traits": [02, 03], 
+      "InternalName": "tropical",
+      "Description": "Better adapted to hot weather",
+      "Instinct": "Nomadic",
+      "Size": "Small"
+    },
+    {
+      "Name": "Hot'n'Cold",
+      "Traits": [01, 02],
+      "InternalName": "hot_and_cold",
+      "Description": "Adapts to any type of weather",
+      "Instinct": "Nomadic",
+      "Size": "Small"
+    },
+    {
+      "Name": "G-Eater",
+      "InternalName": "g_eater",
+      "Traits": [04, 05],
+      "Description": "Can eat G!",
+      "Instinct": "Hoarding",
+      "Size": "Small"
+    },
+    {
+      "Name": "Cryophile",
+      "InternalName": "cryophile",
+      "Traits": [01, 16],
+      "Description": "Love me some cold weather",
+      "Instinct": "Nomadic",
+      "Size": "Medium"
+    },
+    {
+      "Name": "Thermophile",
+      "InternalName": "thermophile",
+      "Traits": [02, 17],
+      "Description": "Love me some hot weather",
+      "Instinct": "Nomadic",
+      "Size": "Medium"
+    }
+  ]
+}
