@@ -3,56 +3,56 @@
   "available_traits":
   [
     {
-      "TID": 06,
+      "TID": 6,
       "Name": "Horizontal Movement",
       "InternalName": "hormov",
-      "Tier": "BasicTier",
-      "Type": "Actuator",
+      "Tier": "TierI",
+      "Type": "Actuator"
     },
     {
-      "TID": 07,
+      "TID": 7,
       "Name": "Vertical Movement",
       "InternalName": "vermov",
-      "Tier": "BasicTier",
-      "Type": "Actuator",
+      "Tier": "TierI",
+      "Type": "Actuator"
     },
     {
-      "TID": 08,
+      "TID": 8,
       "Name": "Extra Speed",
       "InternalName": "speed",
-      "Tier": "BasicTier",
+      "Tier": "TierI",
       "Type": "SimpleTrait"
     },
     {
-      "TID": 01,
+      "TID": 1,
       "Name": "Cold Weather Resistance Trait",
       "InternalName": "coldresist",
       "Tier": "TierI",
-      "Type": "SimpleTrait",
-    },
-    {
-      "TID": 02,
-      "Name": "Hot Weather Resistance Trait",
-      "InternalName": "hotresist",
-      "Tier": "TierI" 
       "Type": "SimpleTrait"
     },
     {
-      "TID": 03,
+      "TID": 2,
+      "Name": "Hot Weather Resistance Trait",
+      "InternalName": "hotresist",
+      "Tier": "TierI",
+      "Type": "SimpleTrait"
+    },
+    {
+      "TID": 3,
       "Name": "Temperature Sensor",
       "InternalName": "tempsensor",
       "Tier": "TierI", 
       "Type": "Sensor"
     },
     {
-      "TID": 04,
+      "TID": 4,
       "Name": "G-Substance Sensor",
       "InternalName": "gsensor",
       "Tier": "TierI", 
       "Type": "Sensor"
     },
     {
-      "TID": 05,
+      "TID": 5,
       "Name": "G-Substance Consumer",
       "InternalName": "gtou",
       "Tier": "TierI", 
