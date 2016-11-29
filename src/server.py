@@ -1,9 +1,23 @@
 from flask import Flask, send_from_directory 
+
+
+from db import *
+from schema import *
+
+
 app = Flask(__name__, static_url_path='/static_data/')
 
+@app.route('/')
+def hello():
+  return "%s <br \> %s"%("/data/splices.json", "/data/traits.json")
+
 @app.route('/data/<path:path>')
-def send_js(path):
+def serve_static(path):
     return send_from_directory('static_data', path)
 
 if __name__ == '__main__':
+    dba = DBAdapter()
+    app.config['DEBUG'] = True
+    create_crud_endpoints(Epoch, app, dba)
+    create_crud_endpoints(SpeciesSeed, app, dba)
     app.run()
