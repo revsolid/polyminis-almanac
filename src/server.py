@@ -20,4 +20,4 @@ if __name__ == '__main__':
     app.config['DEBUG'] = True
     create_crud_endpoints(Epoch, app, dba)
     create_crud_endpoints(SpeciesSeed, app, dba)
-    app.run()
+    app.run(port="80")
