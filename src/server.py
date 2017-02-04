@@ -2,7 +2,7 @@ from flask import Flask, send_from_directory
 
 
 from db import *
-from schema import *
+import schema 
 
 
 app = Flask(__name__, static_url_path='/static_data/')
@@ -18,6 +18,9 @@ def serve_static(path):
 if __name__ == '__main__':
     dba = DBAdapter()
     app.config['DEBUG'] = True
-    create_crud_endpoints(Epoch, app, dba)
-    create_crud_endpoints(SpeciesSeed, app, dba)
-    app.run(port="80")
+
+    import inspect 
+    for (_, persistable) in inspect.getmembers(schema, inspect.isclass):
+        create_crud_endpoints(persistable, app, dba)
+
+    app.run(port=8081)

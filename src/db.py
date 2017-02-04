@@ -1,13 +1,8 @@
 import boto3;
 import json;
+import schema;
 
 from flask import request
-
-NUMERIC = (0, 'N')
-NUMERIC_PRIMARY_KEY = (1, 'N')
-DB_TYPE_DOC =    (0, 'D') 
-DB_TYPE_ID =     (0, 'I') 
-
 
 crud_handlers = {}
 
@@ -19,6 +14,7 @@ def create_crud_endpoints(cls, app, dbadapter):
         urlname = cls.get_urlname()
     else:
         urlname = '%ss'%cls.__name__
+    print 'Creating Endpoints for: %s at %s'%(cls.__name__, urlname)
 
     tablename = None
     if hasattr(cls, 'get_tablename'):
@@ -40,9 +36,10 @@ def create_crud_endpoints(cls, app, dbadapter):
                 TableName=tablename,
                 Item=build_item(obj, cls.get_key(), cls.get_schema()),
             )
-            return "happy face"
+            return 'happy face'
 
         if request.method == 'GET': 
+            print 'Getting from TableName'
             db_response = dbadapter.db_client.get_item(
                 TableName=tablename,
                 Key=get_ddb_key(cls.get_key(), pk, sk),
@@ -60,7 +57,8 @@ def create_crud_endpoints(cls, app, dbadapter):
             for kname in cls.get_key():
                 response[kname] = db_response['Item'][kname]
 
-            return json.dumps(response)
+            return get_json(response, cls.get_key(), cls.get_schema())
+
         if request.method == 'PUT': 
             ## Update
             #  TODO
@@ -70,8 +68,11 @@ def create_crud_endpoints(cls, app, dbadapter):
             # TODO
             pass
 
-    app.add_url_rule('/persistence/%s/<pk>'     %(urlname), endpoint=urlname+'_crud', view_func=crudable_handler, methods=['POST', 'GET', 'PUT', 'DELETE'])
-    app.add_url_rule('/persistence/%s/<pk>/<sk>'%(urlname), endpoint=urlname+'_crud', view_func=crudable_handler, methods=['POST', 'GET', 'PUT', 'DELETE'])
+    pk_url = '/persistence/%s/<pk>'%(urlname.lower())
+    sk_url = '/persistence/%s/<pk>/<sk>'%(urlname.lower())
+    print '  Created endpoints for: %s at %s and %s'%(cls.__name__, pk_url, sk_url)
+    app.add_url_rule(pk_url, endpoint=urlname+'_crud', view_func=crudable_handler, methods=['POST', 'GET', 'PUT', 'DELETE'])
+    app.add_url_rule(sk_url, endpoint=urlname+'_crud', view_func=crudable_handler, methods=['POST', 'GET', 'PUT', 'DELETE'])
 
 def build_item(json_obj, key, schema_p):
     item = {}
@@ -87,8 +88,28 @@ def build_item(json_obj, key, schema_p):
         item[field] = { f[1]: str(v) }
     print item
     return item
-        
 
+def get_json(from_item, key, db_schema):
+    res = {}
+
+    for field in from_item:
+        field_cfg = None
+        if key.has_key(field):
+            field_cfg = key[field]
+            
+        if db_schema.has_key(field):
+            field_cfg = db_schema[field]
+
+        if not field_cfg:
+            continue
+
+        if field_cfg[1] == 'N':
+            res[field] = schema.numeric_field_extract(from_item[field])
+ 
+    return json.dumps(res)
+
+    
+     
 
 def get_ddb_key(key, pk, sk):
     ddb_key = {}
@@ -106,6 +127,7 @@ def get_projection_expression(schema, pk):
     keys = list(schema.keys())
     keys.extend(list(pk.keys()))
     projection_exp = (('%s,'*len(keys))[:-1]%tuple(keys))
+    print 'ProjExp: %s'%projection_exp
     return projection_exp 
 
 
