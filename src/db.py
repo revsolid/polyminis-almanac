@@ -58,11 +58,11 @@ def create_crud_endpoints(cls, app, dbadapter):
                     r = json.dumps({'Error': 'NotFound'})
                     return r, 404
 
-                response = [] 
+                items = [] 
                 for item in db_response.get('Items'):
-                  response.append(get_json(item, schema, cls.get_key()))
+                  items.append(get_json(item, schema, cls.get_key()))
 
-                return json.dumps(response)
+                return json.dumps({'Items': items})
 
 
             #GET - Single Element
