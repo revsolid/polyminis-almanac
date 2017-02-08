@@ -31,7 +31,7 @@ class Epoch:
                  'EpochNum': NUMERIC }
     @staticmethod
     def get_schema():
-        return {}
+        return { 'Position': DB_TYPE_DOC }
 
 class SpeciesSeed:
     @staticmethod
