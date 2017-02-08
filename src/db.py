@@ -84,7 +84,7 @@ def create_crud_endpoints(cls, app, dbadapter):
             for kname in cls.get_key():
                 response[kname] = db_response['Item'][kname]
 
-            return get_json(response, cls.get_key(), cls.get_schema())
+            return json.dumps(get_json(response, cls.get_key(), cls.get_schema()))
 
         if request.method == 'PUT':
             ## Update
@@ -123,6 +123,8 @@ def build_item(json_obj, key, schema_p):
 def get_json(from_item, key, db_schema):
     res = {}
 
+    extraction_funcs = { 'N': schema.numeric_field_extract, 'J': schema.json_field_extract }
+
     for field in from_item:
         field_cfg = None
         if key.has_key(field):
@@ -134,8 +136,7 @@ def get_json(from_item, key, db_schema):
         if not field_cfg:
             continue
 
-        if field_cfg[1] == 'N':
-            res[field] = schema.numeric_field_extract(from_item[field])
+        res[field] = extraction_funcs[field_cfg[1]](from_item[field])
 
     return res
 
@@ -143,7 +144,7 @@ def get_json(from_item, key, db_schema):
 def get_ddb_key(key, pk, sk):
     ddb_key = {}
 
-    for k in key.iteritems():
+    for k in key:
         v = key[k]
         if v[0] == 1:
             ddb_key[k] = { v[1]: pk }
@@ -155,6 +156,7 @@ def get_ddb_key(key, pk, sk):
 def get_projection_expression(schema, pk):
     keys = list(schema.keys())
     keys.extend(list(pk.keys()))
+    print keys
     projection_exp = (('%s,'*len(keys))[:-1]%tuple(keys))
     print 'ProjExp: %s'%projection_exp
     return projection_exp
