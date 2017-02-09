@@ -80,8 +80,12 @@ def create_crud_endpoints(cls, app, dbadapter):
 
             response = {}
             for field in cls.get_schema():
+                if not db_response['Item'].has_key(field):
+                    continue
                 response[field] = db_response['Item'][field]
             for kname in cls.get_key():
+                if not db_response['Item'].has_key(kname):
+                    continue
                 response[kname] = db_response['Item'][kname]
 
             return json.dumps(get_json(response, cls.get_key(), cls.get_schema()))
@@ -106,6 +110,7 @@ def create_crud_endpoints(cls, app, dbadapter):
     print '  Created endpoints for: %s at %s and %s'%(cls.__name__, pk_url, sk_url)
 
 def build_item(json_obj, key, schema_p):
+    print json_obj
     item = {}
     schema = dict(schema_p);
     schema.update(key)
@@ -114,16 +119,21 @@ def build_item(json_obj, key, schema_p):
             continue
 
         v = json_obj[field]
-        f = schema[field]
+        f = schema[field][1]
+        
+        if f == 'J':
+          f = 'S'
+          v = json.dumps(v)
 
-        item[field] = { f[1]: str(v) }
-    print item
+        item[field] = { f: str(v) }
+
     return item
 
 def get_json(from_item, key, db_schema):
     res = {}
 
-    extraction_funcs = { 'N': schema.numeric_field_extract, 'J': schema.json_field_extract }
+    print from_item
+    extraction_funcs = { 'N': schema.numeric_field_extract, 'J': schema.json_field_extract, 'S': schema.string_field_extract }
 
     for field in from_item:
         field_cfg = None
@@ -136,6 +146,7 @@ def get_json(from_item, key, db_schema):
         if not field_cfg:
             continue
 
+        print field_cfg
         res[field] = extraction_funcs[field_cfg[1]](from_item[field])
 
     return res
@@ -156,9 +167,7 @@ def get_ddb_key(key, pk, sk):
 def get_projection_expression(schema, pk):
     keys = list(schema.keys())
     keys.extend(list(pk.keys()))
-    print keys
     projection_exp = (('%s,'*len(keys))[:-1]%tuple(keys))
-    print 'ProjExp: %s'%projection_exp
     return projection_exp
 
 

@@ -6,6 +6,7 @@ DB_TYPE_NUMERIC_PRIMARY_KEY = (1, 'N')
 DB_TYPE_DOC =    (0, 'D')
 DB_TYPE_ID =     (0, 'I')
 DB_TYPE_JSON = (0, 'J')
+DB_TYPE_STRING = (0, 'S')
 
 def numeric_field_extract(field):
     if isinstance(field, decimal.Decimal):
@@ -16,12 +17,14 @@ def numeric_field_extract(field):
     return int(field['N'])
 
 def json_field_extract(field):
-    print field
+    s_field = string_field_extract(field)
+    return json.loads(s_field)
 
+def string_field_extract(field):
     if isinstance(field, basestring):
-        return json.loads(field)
+        return str(field)
 
-    return json.loads(field['S'])
+    return str(field['S'])
 
 def id_field_extract(field):
     pass
@@ -57,7 +60,13 @@ class Planet:
         return { 'PlanetId': DB_TYPE_NUMERIC_PRIMARY_KEY }
     @staticmethod
     def get_schema():
-        return { 'SpacePosition': DB_TYPE_JSON }
+        # 'SpacePosition': { 'x': x, 'y': y }
+        # 'Temperature'  : { 'Min': m, 'Max': M }
+        # 'Ph'           : { 'Min': m, 'Max': M }
+        return { 'SpacePosition': DB_TYPE_JSON,
+                 'Temperature'  : DB_TYPE_JSON, 
+                 'Ph'           : DB_TYPE_JSON,
+                 'PlanetName'   : DB_TYPE_STRING }
 
 class Test:
     @staticmethod
