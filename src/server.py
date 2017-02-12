@@ -1,8 +1,8 @@
-from flask import Flask, send_from_directory 
+from flask import Flask, send_from_directory
 
 
 from db import *
-import schema 
+import schema
 
 
 app = Flask(__name__, static_url_path='/static_data/')
@@ -19,7 +19,7 @@ if __name__ == '__main__':
     dba = DBAdapter()
     app.config['DEBUG'] = True
 
-    import inspect 
+    import inspect
     for (_, persistable) in inspect.getmembers(schema, inspect.isclass):
         create_crud_endpoints(persistable, app, dba)
 
