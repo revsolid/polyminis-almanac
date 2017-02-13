@@ -75,7 +75,7 @@ class User:
         return { 'UserName': DB_TYPE_STRING_PRIMARY_KEY }
     @staticmethod
     def get_schema():
-        return { 'LastKnownSpacePosition': DB_TYPE_JSON }
+        return { 'LastKnownPosition': DB_TYPE_JSON }
 
 class InventoryEntry:
     @staticmethod
