@@ -39,6 +39,9 @@ def doc_field_extract(field):
 # entries in the Key / Schema Dictionaries and the actual tables
 
 class Epoch:
+    '''
+    Epoch - 
+    '''
     @staticmethod
     def get_key():
         return { 'PlanetId': DB_TYPE_NUMERIC_PRIMARY_KEY,
@@ -56,18 +59,25 @@ class SpeciesSeed:
         return {}
 
 class Planet:
+    '''
+    Planet -  
+        'PlanetName'     : 'PlanetName',
+        'SpacePosition'  : { 'x': x, 'y': y },
+        'Temperature'    : { 'Min': m, 'Max': M },
+        'Ph'             : { 'Min': m, 'Max': M },
+        'Materials'      : { 'G': g, 'U': u, ...}
+    '''
     @staticmethod
     def get_key():
         return { 'PlanetId': DB_TYPE_NUMERIC_PRIMARY_KEY }
     @staticmethod
     def get_schema():
-        # 'SpacePosition': { 'x': x, 'y': y }
-        # 'Temperature'  : { 'Min': m, 'Max': M }
-        # 'Ph'           : { 'Min': m, 'Max': M }
         return { 'SpacePosition': DB_TYPE_JSON,
                  'Temperature'  : DB_TYPE_JSON,
                  'Ph'           : DB_TYPE_JSON,
-                 'PlanetName'   : DB_TYPE_STRING }
+                 'Materials'    : DB_TYPE_JSON,
+                 'PlanetName'   : DB_TYPE_STRING,
+                 'Epoch'        : DB_TYPE_NUMERIC }
 
 class User:
     @staticmethod
@@ -77,6 +87,11 @@ class User:
     def get_schema():
         return { 'LastKnownPosition': DB_TYPE_JSON }
 
+# Examples of Inventory Entries:
+#
+# UserName: 'TestUser', 'InventoryEntry': {'Type': BioMass, 'Value': 100 }
+# UserName: 'TestUser', 'InventoryEntry': {'Type': SpeciesInStorage, 'Value': { ... Species object ...}}
+# UserName: 'TestUser2', 'InventoryEntry': {'Type': BioMass, 'Value': 1100 }
 class InventoryEntry:
     @staticmethod
     def get_urlname():
@@ -88,17 +103,20 @@ class InventoryEntry:
     def get_schema():
         return { 'InventoryEntry': DB_TYPE_JSON }
 
+# Species Owned by the player deployed on a Planet
 class OwnedSpecies:
     @staticmethod
     def get_urlname():
         return 'OwnedSpecies'
     @staticmethod
     def get_key():
-        return { 'UserName': DB_TYPE_STRING_PRIMARY_KEY }
+        return { 'UserName': DB_TYPE_STRING_PRIMARY_KEY, 'PlanetId': DB_TYPE_NUMERIC }
     @staticmethod
     def get_schema():
-        return { 'Species': DB_TYPE_JSON }
+        return { 'SpeciesName': DB_TYPE_STRING }
 
+# To track the last time a player visited a Planet, an absence of a record means, obviously that planet has
+# not been visited by the player
 class PlanetVisit:
     @staticmethod
     def get_key():
@@ -107,11 +125,17 @@ class PlanetVisit:
     def get_schema():
         return { 'VisitData': DB_TYPE_JSON }
 
-
-class Test:
+class SpeciesInPlanet:
     @staticmethod
     def get_key():
-        return { 'TEST_KEY': DB_TYPE_NUMERIC_PRIMARY_KEY, 'TEST_RANGE': DB_TYPE_NUMERIC }
+        return { 'PlanetId': DB_TYPE_NUMERIC_PRIMARY_KEY, 'Epoch': DB_TYPE_NUMERIC }
     @staticmethod
     def get_schema():
-        return { 'TEST_FIELD': DB_TYPE_NUMERIC }
+        return { 'SpeciesName': DB_TYPE_STRING,
+                 'Proportion': DB_TYPE_NUMERIC,
+                 'Individuals': DB_TYPE_JSON,
+                 'GAConfiguration': DB_TYPE_JSON,
+                 'TranslationTable': DB_TYPE_JSON,
+                 'InstinctWeights': DB_TYPE_JSON
+               }
+    
