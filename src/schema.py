@@ -15,7 +15,10 @@ def numeric_field_extract(field):
             return float(field)
         else:
             return int(field)
-    return int(field['N'])
+    try:
+        return int(field['N'])
+    except ValueError:
+        return float(field['N'])
 
 def json_field_extract(field):
     s_field = string_field_extract(field)
@@ -85,20 +88,20 @@ class User:
         return { 'UserName': DB_TYPE_STRING_PRIMARY_KEY }
     @staticmethod
     def get_schema():
-        return { 'LastKnownPosition': DB_TYPE_JSON }
+        return { 'LastKnownPosition': DB_TYPE_JSON, 'Biomass': DB_TYPE_NUMERIC }
 
 # Examples of Inventory Entries:
 #
-# UserName: 'TestUser', 'InventoryEntry': {'Type': BioMass, 'Value': 100 }
-# UserName: 'TestUser', 'InventoryEntry': {'Type': SpeciesInStorage, 'Value': { ... Species object ...}}
-# UserName: 'TestUser2', 'InventoryEntry': {'Type': BioMass, 'Value': 1100 }
+# UserName: 'TestUser',  'InventoryEntry': {'Type': SpeciesSeed, 'Value': { ... Species object ...}}
+# UserName: 'TestUser', 'InventoryEntry': {'Type': Research, 'Value': { ... Research object ...}}
+# UserName: 'TestUser2',  'InventoryEntry': {'Type': SpeciesSeed, 'Value': { ... Species object ...}}
 class InventoryEntry:
     @staticmethod
     def get_urlname():
         return 'InventoryEntries'
     @staticmethod
     def get_key():
-        return { 'UserName': DB_TYPE_STRING_PRIMARY_KEY }
+        return { 'UserName': DB_TYPE_STRING_PRIMARY_KEY, 'Slot': DB_TYPE_NUMERIC }
     @staticmethod
     def get_schema():
         return { 'InventoryEntry': DB_TYPE_JSON }
@@ -125,15 +128,35 @@ class PlanetVisit:
     def get_schema():
         return { 'VisitData': DB_TYPE_JSON }
 
-class SpeciesInPlanet:
+
+class SpeciesSummary:
+    @staticmethod
+    def get_urlname():
+        return 'SpeciesSummaries'
+    @staticmethod
+    def get_tablename():
+        return 'SpeciesInPlanet'
     @staticmethod
     def get_key():
-        return { 'PlanetId': DB_TYPE_NUMERIC_PRIMARY_KEY, 'Epoch': DB_TYPE_NUMERIC }
+        return { 'PlanetEpoch': DB_TYPE_STRING_PRIMARY_KEY, 'SpeciesName': DB_TYPE_STRING}
     @staticmethod
     def get_schema():
-        return { 'SpeciesName': DB_TYPE_STRING,
-                 'Proportion': DB_TYPE_NUMERIC,
+        schema = SpeciesInPlanet.get_schema()
+        del schema['Individuals']
+        return schema
+
+class SpeciesInPlanet:
+    @staticmethod
+    def get_urlname():
+        return 'SpeciesInPlanet'
+    @staticmethod
+    def get_key():
+        return { 'PlanetEpoch': DB_TYPE_STRING_PRIMARY_KEY, 'SpeciesName': DB_TYPE_STRING}
+    @staticmethod
+    def get_schema():
+        return { 'Percentage': DB_TYPE_NUMERIC,
                  'Individuals': DB_TYPE_JSON,
+                 'CreatorName': DB_TYPE_STRING,
                  'GAConfiguration': DB_TYPE_JSON,
                  'TranslationTable': DB_TYPE_JSON,
                  'InstinctWeights': DB_TYPE_JSON

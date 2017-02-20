@@ -65,30 +65,47 @@ def create_crud_endpoints(cls, app, dbadapter):
                 return json.dumps({'Items': items})
 
 
-            #GET - Single Element
-            db_response = dbadapter.db_client.get_item(
+            #GET - Query Specific Elements
+
+            db_response = dbadapter.db_client.query(
                 TableName=tablename,
-                Key=get_ddb_key(cls.get_key(), pk, sk),
-                ConsistentRead=False,
-                ReturnConsumedCapacity='NONE',
+                ExpressionAttributeValues=get_key_expression_av(cls.get_key(), pk, sk),    ## { ':v1': { 'S': 'No One You Know', }, },
+                KeyConditionExpression=get_key_condition_expression(cls.get_key(), pk, sk),
                 ProjectionExpression=get_projection_expression(cls.get_schema(), cls.get_key()),
+                ConsistentRead=False,
+                ReturnConsumedCapacity='NONE'
             )
 
-            if not db_response.has_key('Item'):
+            print db_response
+            if not db_response.get('Count', 0) > 0:
               r = json.dumps({'Error': 'NotFound'})
               return r, 404
 
-            response = {}
-            for field in cls.get_schema():
-                if not db_response['Item'].has_key(field):
-                    continue
-                response[field] = db_response['Item'][field]
-            for kname in cls.get_key():
-                if not db_response['Item'].has_key(kname):
-                    continue
-                response[kname] = db_response['Item'][kname]
+            elements = []
+            for item in db_response['Items']:
+                elem = {}
+                for field in cls.get_schema():
+                    if not item.has_key(field):
+                        continue
+                    elem[field] = item[field]
+                for kname in cls.get_key():
+                    if not item.has_key(kname):
+                        continue
+                    elem[kname] = item[kname]
+                elements.append(get_json(elem, cls.get_key(), cls.get_schema()))
 
-            return json.dumps(get_json(response, cls.get_key(), cls.get_schema()))
+            expect_list = ( (not sk) and len(cls.get_key().keys()) > 1)
+
+            print (not (pk and sk))
+            print ( (not sk) and len(cls.get_key().keys()) > 1)
+
+            response = {}
+            if not expect_list:
+                response = elements[0] 
+            else:
+                response['Items'] = elements
+
+            return json.dumps(response)
 
         if request.method == 'PUT':
             ## Update
@@ -187,7 +204,6 @@ def get_update_expression(payload, schema):
     expr = 'SET'
 
     for (i, (k,v)) in enumerate(payload.iteritems()):
-        #strs = {'J': '%s', 'S': '%s', 'I': '%i'}
         if schema.has_key(k):
             expr += ' %s = :val%i,'%(k, i)
 
@@ -198,13 +214,35 @@ def get_update_expression(payload, schema):
 
 def get_expression_av(payload, schema):
     expression_av = {}
+    cast_funcs = { 'N': int, 'S': str, 'J': json.dumps }
     for (i, (k,v)) in enumerate(payload.iteritems()):
         if schema.has_key(k):
-            expression_av[':val%i'%i] = json.dumps(v)
+            expression_av[':val%i'%i] = cast_funcs[schema[k][1]](v) #json.dumps(v)
 
 
     print expression_av
     return expression_av
+
+def get_key_expression_av(key, pk, sk):
+    expression_av = {}
+    for (i, (k,v)) in enumerate(key.iteritems()):
+        if v[0] == 1:
+            expression_av[':val%i'%i] = { v[1] : pk }
+        elif sk != None:
+            expression_av[':val%i'%i] = { v[1] : sk }
+
+    return expression_av
+
+def get_key_condition_expression(key, pk, sk):
+    expr = ''
+
+    for (i, (k,v)) in enumerate(key.iteritems()):
+        if v[0] == 1:
+            expr += ' %s = :val%i'%(k, i)
+        elif sk != None:
+            expr += ' AND %s = :val%i'%(k, i)
+
+    return expr
 
 def get_projection_expression(schema, pk):
     keys = list(schema.keys())
@@ -245,8 +283,8 @@ class DBAdapter:
             KeySchema=key_schema,
             AttributeDefinitions=attr_defs,
             ProvisionedThroughput={
-                'ReadCapacityUnits': 5,
-                'WriteCapacityUnits': 5
+                'ReadCapacityUnits': 1,
+                'WriteCapacityUnits': 1
             })
 
 if __name__ == '__main__':
