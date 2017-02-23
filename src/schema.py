@@ -150,6 +150,9 @@ class SpeciesInPlanet:
     def get_urlname():
         return 'SpeciesInPlanet'
     @staticmethod
+    def get_tablename():
+        return 'SpeciesInPlanet'
+    @staticmethod
     def get_key():
         return { 'PlanetEpoch': DB_TYPE_STRING_PRIMARY_KEY, 'SpeciesName': DB_TYPE_STRING}
     @staticmethod
