@@ -88,7 +88,7 @@ class User:
         return { 'UserName': DB_TYPE_STRING_PRIMARY_KEY }
     @staticmethod
     def get_schema():
-        return { 'LastKnownPosition': DB_TYPE_JSON, 'Biomass': DB_TYPE_NUMERIC }
+        return { 'LastKnownPosition': DB_TYPE_JSON, 'Biomass': DB_TYPE_NUMERIC, 'InventorySlots': DB_TYPE_NUMERIC }
 
 # Examples of Inventory Entries:
 #
@@ -150,6 +150,9 @@ class SpeciesInPlanet:
     def get_urlname():
         return 'SpeciesInPlanet'
     @staticmethod
+    def get_tablename():
+        return 'SpeciesInPlanet'
+    @staticmethod
     def get_key():
         return { 'PlanetEpoch': DB_TYPE_STRING_PRIMARY_KEY, 'SpeciesName': DB_TYPE_STRING}
     @staticmethod
@@ -158,7 +161,7 @@ class SpeciesInPlanet:
                  'Individuals': DB_TYPE_JSON,
                  'CreatorName': DB_TYPE_STRING,
                  'GAConfiguration': DB_TYPE_JSON,
-                 'TranslationTable': DB_TYPE_JSON,
+                 'Splices':         DB_TYPE_JSON,
                  'InstinctWeights': DB_TYPE_JSON
                }
     
