@@ -164,4 +164,24 @@ class SpeciesInPlanet:
                  'Splices':         DB_TYPE_JSON,
                  'InstinctWeights': DB_TYPE_JSON
                }
-    
+
+class GameRules:
+    @staticmethod
+    def get_urlname():
+        return 'GameRules'
+    @staticmethod
+    def get_tablename():
+        return 'GameRules'
+    @staticmethod
+    def get_key():
+        return { 'VERSION': DB_TYPE_STRING_PRIMARY_KEY }
+    @staticmethod
+    def get_schema():
+        return { 'WarpCostCurveKeyframes': DB_TYPE_JSON,
+                 'PercentageToBiomassCurveKeyframes': DB_TYPE_JSON,
+                 'BiomassToPercentageCurveKeyframes': DB_TYPE_JSON,
+                 'BaseWarpCost': DB_TYPE_NUMERIC,
+                 'WarpCostMultiplier': DB_TYPE_NUMERIC,
+                 'MaxWarpDistance': DB_TYPE_NUMERIC
+## TODO: Still missing a few fields
+                }
