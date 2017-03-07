@@ -78,9 +78,9 @@ class Planet:
         return { 'SpacePosition': DB_TYPE_JSON,
                  'Temperature'  : DB_TYPE_JSON,
                  'Ph'           : DB_TYPE_JSON,
-                 'Materials'    : DB_TYPE_JSON,
                  'PlanetName'   : DB_TYPE_STRING,
-                 'Epoch'        : DB_TYPE_NUMERIC }
+                 'Epoch'        : DB_TYPE_NUMERIC,
+                 'Environment'  : DB_TYPE_JSON }
 
 class User:
     @staticmethod
@@ -160,8 +160,9 @@ class SpeciesInPlanet:
         return { 'Percentage': DB_TYPE_NUMERIC,
                  'Individuals': DB_TYPE_JSON,
                  'CreatorName': DB_TYPE_STRING,
-                 'GAConfiguration': DB_TYPE_JSON,
-                 'Splices':         DB_TYPE_JSON,
+                 'GAConfiguration':  DB_TYPE_JSON,
+                 'Splices':          DB_TYPE_JSON,
+                 'TranslationTable': DB_TYPE_JSON, 
                  'InstinctWeights': DB_TYPE_JSON
                }
 
@@ -182,6 +183,8 @@ class GameRules:
                  'BiomassToPercentageCurveKeyframes': DB_TYPE_JSON,
                  'BaseWarpCost': DB_TYPE_NUMERIC,
                  'WarpCostMultiplier': DB_TYPE_NUMERIC,
-                 'MaxWarpDistance': DB_TYPE_NUMERIC
-## TODO: Still missing a few fields
+                 'MaxWarpDistance': DB_TYPE_NUMERIC,
+                 'SpliceData': DB_TYPE_JSON,
+                 'TraitData': DB_TYPE_JSON,
+                 'DefaultTraits': DB_TYPE_JSON
                 }
