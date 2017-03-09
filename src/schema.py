@@ -188,3 +188,17 @@ class GameRules:
                  'TraitData': DB_TYPE_JSON,
                  'DefaultTraits': DB_TYPE_JSON
                 }
+
+class EpochCounter:
+    @staticmethod
+    def get_urlname():
+        return 'EpochCounter'
+    @staticmethod
+    def get_tablename():
+        return 'EpochCounter'
+    @staticmethod
+    def get_key():
+        return { 'VERSION': DB_TYPE_STRING_PRIMARY_KEY }
+    @staticmethod
+    def get_schema():
+        return { 'Epoch': DB_TYPE_NUMERIC }
