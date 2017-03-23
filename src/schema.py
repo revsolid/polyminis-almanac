@@ -68,6 +68,9 @@ class Planet:
         'SpacePosition'  : { 'x': x, 'y': y },
         'Temperature'    : { 'Min': m, 'Max': M },
         'Ph'             : { 'Min': m, 'Max': M },
+        'Density'        : [0..1],
+        'Epoch'          : N > 0,
+        'Environment'    : { ... polyminis_core::Environment ... }
         'Materials'      : { 'G': g, 'U': u, ...}
     '''
     @staticmethod
@@ -75,10 +78,12 @@ class Planet:
         return { 'PlanetId': DB_TYPE_NUMERIC_PRIMARY_KEY }
     @staticmethod
     def get_schema():
-        return { 'SpacePosition': DB_TYPE_JSON,
+        return { 
+                 'PlanetName'   : DB_TYPE_STRING,
+                 'SpacePosition': DB_TYPE_JSON,
                  'Temperature'  : DB_TYPE_JSON,
                  'Ph'           : DB_TYPE_JSON,
-                 'PlanetName'   : DB_TYPE_STRING,
+                 'Density'      : DB_TYPE_NUMERIC,
                  'Epoch'        : DB_TYPE_NUMERIC,
                  'Environment'  : DB_TYPE_JSON }
 
@@ -92,9 +97,9 @@ class User:
 
 # Examples of Inventory Entries:
 #
-# UserName: 'TestUser',  'InventoryEntry': {'Type': SpeciesSeed, 'Value': { ... Species object ...}}
-# UserName: 'TestUser', 'InventoryEntry': {'Type': Research, 'Value': { ... Research object ...}}
-# UserName: 'TestUser2',  'InventoryEntry': {'Type': SpeciesSeed, 'Value': { ... Species object ...}}
+# UserName: 'TestUser', Slot: 0,  'InventoryEntry': {'Type': SpeciesSeed, 'Value': { ... Species object ...}}
+# UserName: 'TestUser', Slot: 1, 'InventoryEntry': {'Type': Research, 'Value': { ... Research object ...}}
+# UserName: 'TestUser2', Slot: 0, 'InventoryEntry': {'Type': SpeciesSeed, 'Value': { ... Species object ...}}
 class InventoryEntry:
     @staticmethod
     def get_urlname():
