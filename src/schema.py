@@ -68,6 +68,9 @@ class Planet:
         'SpacePosition'  : { 'x': x, 'y': y },
         'Temperature'    : { 'Min': m, 'Max': M },
         'Ph'             : { 'Min': m, 'Max': M },
+        'Density'        : [0..1],
+        'Epoch'          : N > 0,
+        'Environment'    : { ... polyminis_core::Environment ... }
         'Materials'      : { 'G': g, 'U': u, ...}
     '''
     @staticmethod
@@ -75,12 +78,14 @@ class Planet:
         return { 'PlanetId': DB_TYPE_NUMERIC_PRIMARY_KEY }
     @staticmethod
     def get_schema():
-        return { 'SpacePosition': DB_TYPE_JSON,
+        return { 
+                 'PlanetName'   : DB_TYPE_STRING,
+                 'SpacePosition': DB_TYPE_JSON,
                  'Temperature'  : DB_TYPE_JSON,
                  'Ph'           : DB_TYPE_JSON,
-                 'Materials'    : DB_TYPE_JSON,
-                 'PlanetName'   : DB_TYPE_STRING,
-                 'Epoch'        : DB_TYPE_NUMERIC }
+                 'Density'      : DB_TYPE_NUMERIC,
+                 'Epoch'        : DB_TYPE_NUMERIC,
+                 'Environment'  : DB_TYPE_JSON }
 
 class User:
     @staticmethod
@@ -92,9 +97,9 @@ class User:
 
 # Examples of Inventory Entries:
 #
-# UserName: 'TestUser',  'InventoryEntry': {'Type': SpeciesSeed, 'Value': { ... Species object ...}}
-# UserName: 'TestUser', 'InventoryEntry': {'Type': Research, 'Value': { ... Research object ...}}
-# UserName: 'TestUser2',  'InventoryEntry': {'Type': SpeciesSeed, 'Value': { ... Species object ...}}
+# UserName: 'TestUser', Slot: 0,  'InventoryEntry': {'Type': SpeciesSeed, 'Value': { ... Species object ...}}
+# UserName: 'TestUser', Slot: 1, 'InventoryEntry': {'Type': Research, 'Value': { ... Research object ...}}
+# UserName: 'TestUser2', Slot: 0, 'InventoryEntry': {'Type': SpeciesSeed, 'Value': { ... Species object ...}}
 class InventoryEntry:
     @staticmethod
     def get_urlname():
@@ -160,8 +165,9 @@ class SpeciesInPlanet:
         return { 'Percentage': DB_TYPE_NUMERIC,
                  'Individuals': DB_TYPE_JSON,
                  'CreatorName': DB_TYPE_STRING,
-                 'GAConfiguration': DB_TYPE_JSON,
-                 'Splices':         DB_TYPE_JSON,
+                 'GAConfiguration':  DB_TYPE_JSON,
+                 'Splices':          DB_TYPE_JSON,
+                 'TranslationTable': DB_TYPE_JSON, 
                  'InstinctWeights': DB_TYPE_JSON
                }
 
@@ -182,6 +188,22 @@ class GameRules:
                  'BiomassToPercentageCurveKeyframes': DB_TYPE_JSON,
                  'BaseWarpCost': DB_TYPE_NUMERIC,
                  'WarpCostMultiplier': DB_TYPE_NUMERIC,
-                 'MaxWarpDistance': DB_TYPE_NUMERIC
-## TODO: Still missing a few fields
+                 'MaxWarpDistance': DB_TYPE_NUMERIC,
+                 'SpliceData': DB_TYPE_JSON,
+                 'TraitData': DB_TYPE_JSON,
+                 'DefaultTraits': DB_TYPE_JSON
                 }
+
+class EpochCounter:
+    @staticmethod
+    def get_urlname():
+        return 'EpochCounter'
+    @staticmethod
+    def get_tablename():
+        return 'EpochCounter'
+    @staticmethod
+    def get_key():
+        return { 'VERSION': DB_TYPE_STRING_PRIMARY_KEY }
+    @staticmethod
+    def get_schema():
+        return { 'Epoch': DB_TYPE_NUMERIC }
