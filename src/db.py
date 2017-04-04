@@ -1,4 +1,5 @@
 import boto3
+import decimal
 import json
 import schema
 import time
@@ -212,12 +213,13 @@ def get_update_expression(payload, schema):
     return expr
 
 
-def get_expression_av(payload, schema):
+def get_expression_av(payload, p_schema):
     expression_av = {}
-    cast_funcs = { 'N': int, 'S': str, 'J': json.dumps }
+
+    cast_funcs = { 'N': decimal.Decimal, 'S': str, 'J': json.dumps }
     for (i, (k,v)) in enumerate(payload.iteritems()):
-        if schema.has_key(k):
-            expression_av[':val%i'%i] = cast_funcs[schema[k][1]](v) #json.dumps(v)
+        if p_schema.has_key(k):
+            expression_av[':val%i'%i] = cast_funcs[p_schema[k][1]](v) #json.dumps(v)
 
 
     print expression_av
