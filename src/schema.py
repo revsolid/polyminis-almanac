@@ -168,7 +168,8 @@ class SpeciesInPlanet:
                  'GAConfiguration':  DB_TYPE_JSON,
                  'Splices':          DB_TYPE_JSON,
                  'TranslationTable': DB_TYPE_JSON, 
-                 'InstinctWeights': DB_TYPE_JSON
+                 'InstinctWeights': DB_TYPE_JSON,
+                 'InstinctTuning': DB_TYPE_JSON
                }
 
 class GameRules:
