@@ -51,7 +51,9 @@ class Epoch:
                  'EpochNum': DB_TYPE_NUMERIC }
     @staticmethod
     def get_schema():
-        return {}
+        return {
+            'Percentages': DB_TYPE_JSON,
+        }
 
 class SpeciesSeed:
     @staticmethod

@@ -216,7 +216,14 @@ def get_update_expression(payload, schema):
 def get_expression_av(payload, p_schema):
     expression_av = {}
 
-    cast_funcs = { 'N': decimal.Decimal, 'S': str, 'J': json.dumps }
+    def decimal_extract(v):
+        with decimal.localcontext() as ctx:
+            ctx.traps[decimal.Inexact] = 0
+            ctx.traps[decimal.Rounded] = 0
+            return ctx.create_decimal_from_float(v)
+
+    cast_funcs = { 'N': decimal_extract,
+                   'S': str, 'J': json.dumps }
     for (i, (k,v)) in enumerate(payload.iteritems()):
         if p_schema.has_key(k):
             expression_av[':val%i'%i] = cast_funcs[p_schema[k][1]](v) #json.dumps(v)
@@ -240,7 +247,7 @@ def get_key_condition_expression(key, pk, sk):
 
     for (i, (k,v)) in enumerate(key.iteritems()):
         if v[0] == 1:
-            expr += ' %s = :val%i'%(k, i)
+            expr = ' %s = :val%i'%(k, i) + expr
         elif sk != None:
             expr += ' AND %s = :val%i'%(k, i)
 
