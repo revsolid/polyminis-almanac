@@ -194,7 +194,8 @@ class GameRules:
                  'MaxWarpDistance': DB_TYPE_NUMERIC,
                  'SpliceData': DB_TYPE_JSON,
                  'TraitData': DB_TYPE_JSON,
-                 'DefaultTraits': DB_TYPE_JSON
+                 'DefaultTraits': DB_TYPE_JSON,
+                 'DefaultGAConfiguration': DB_TYPE_JSON
                 }
 
 class EpochCounter:
